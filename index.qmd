@@ -1,0 +1,49 @@
+---
+title: "Maestría en Estadística Aplicada<br>Manejo y Visualización de Datos"
+subtitle: "Trabajo final"
+author: Lic. Qca. Laura Carrau
+format: 
+  html:
+    embed-resources: true
+execute:
+    echo: true
+    warning: false
+    message: false
+editor: source
+toc: true
+lang: es
+lightbox: true
+---
+
+## Introducción
+
+El conjunto de datos seleccionado contiene información
+
+Descripción del conjunto de datos
+
+Tabla resumen de las variables y sus características
+
+## Materiales y métodos
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+## Resultados
+
+El análisis realizado mostró 
+
+## Conclusiones
+
+muchas gracias
