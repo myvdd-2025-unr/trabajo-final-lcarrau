@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
 }
-
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-}
-pre.numberSource { margin-left: 3em; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -3088,8 +3054,12 @@ vertical-align: -.125em;
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
-  <li><a href="#materiales-y-métodos" id="toc-materiales-y-métodos" class="nav-link" data-scroll-target="#materiales-y-métodos">Materiales y métodos</a></li>
+  <li><a href="#objetivo" id="toc-objetivo" class="nav-link active" data-scroll-target="#objetivo">Objetivo</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#materiales-y-métodos" id="toc-materiales-y-métodos" class="nav-link" data-scroll-target="#materiales-y-métodos">Materiales y métodos</a>
+  <ul class="collapse">
+  <li><a href="#descripción-del-conjunto-de-datos" id="toc-descripción-del-conjunto-de-datos" class="nav-link" data-scroll-target="#descripción-del-conjunto-de-datos">Descripción del conjunto de datos</a></li>
+  </ul></li>
   <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados">Resultados</a></li>
   <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">Conclusiones</a></li>
   </ul>
@@ -3123,102 +3093,136 @@ vertical-align: -.125em;
 </header>
 
 
+<section id="objetivo" class="level2">
+<h2 class="anchored" data-anchor-id="objetivo">Objetivo</h2>
+<div style="text-align: justify;">
+<p>El objetivo de este trabajo es generar un producto en el cual se implemente el uso de las herramientas presentadas en la asignatura para el <strong>Manejo y Visualización de Datos</strong>, trabajando con un enfoque ordenado y reproducible.</p>
+</div>
+</section>
 <section id="introducción" class="level2">
 <h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
-<p>El conjunto de datos seleccionado contiene información del catálogo de libros de Open Library (<a href="https://openlibrary.org/" title="Un recurso de Internet Archive">Open Library</a>).</p>
-<p>Descripción del conjunto de datos</p>
-<p>Tabla resumen de las variables y sus características</p>
+<div style="text-align: justify;">
+<p><strong>Internet Archive</strong> es una organización sin fines de lucro fundada en 1996 con la misión de preservar y garantizar el acceso universal al conocimiento. Funciona como una enorme biblioteca digital que almacena páginas web, libros, música, películas, software y otros materiales culturales en formato digital. Su herramienta más conocida es la <em>Wayback Machine</em>, que permite consultar versiones archivadas de sitios web a lo largo del tiempo.</p>
+<p><strong>Open Library</strong> es un proyecto de Internet Archive que busca crear una página web para cada libro publicado. Además de ofrecer fichas bibliográficas completas, permite acceder a millones de textos: algunos disponibles para descarga libre por ser de dominio público y otros en préstamo digital, emulando el funcionamiento de una biblioteca tradicional. También es colaborativa, ya que los usuarios pueden contribuir agregando o editando información sobre los libros.</p>
+</div>
+</section>
+<section id="materiales-y-métodos" class="level2">
+<h2 class="anchored" data-anchor-id="materiales-y-métodos">Materiales y métodos</h2>
+<div style="text-align: justify;">
+<p>El conjunto de datos seleccionado contiene información del catálogo de libros de Open Library (<a href="https://openlibrary.org/" title="Un recurso de Internet Archive">Open Library</a>) con libros publicados hasta el año 2024. La base de datos se obtuvo del sitio Kaggle (<a href="https://www.kaggle.com/datasets/jorgeborja/open-library-books-api-12k/data">Kaggle - Open Library Books</a>)</p>
+</div>
+<p>Se realizó una selección de los registros en base a los siguientes criterios:</p>
+<ul>
+<li><p>Registros con datos válidos para las variables: Author, description y genres (que no se trate de libros para colorear).</p></li>
+<li><p>average_rating distintos de 0.00</p></li>
+<li><p>num_pages distintos de 0</p></li>
+<li><p>rating_count mayor a 10.</p></li>
+</ul>
+<section id="descripción-del-conjunto-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="descripción-del-conjunto-de-datos">Descripción del conjunto de datos</h3>
+<div style="text-align: justify;">
+<p>El conjunto de datos crudo consta de 12.185 registros para 14 variables. Luego del proceso de depuración, permanecieron 465 registros.</p>
+</div>
 <table class="caption-top table">
+<caption>Tabla resumen de las variables y sus características</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 58%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Variable</th>
+<th>Tipo de registro</th>
 <th>Descripción</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>book_id</td>
-<td>OpenLibrary Identifier</td>
+<td>caracter</td>
+<td>Identificador de OpenLibrary</td>
 </tr>
 <tr class="even">
 <td>title</td>
-<td>Book title</td>
+<td>caracter</td>
+<td>Título del libro</td>
 </tr>
 <tr class="odd">
 <td>author</td>
-<td>Book author</td>
+<td>caracter</td>
+<td>Autor del libro</td>
 </tr>
 <tr class="even">
 <td>description</td>
-<td>Book description</td>
+<td>caracter</td>
+<td>Descripción del libro</td>
 </tr>
 <tr class="odd">
 <td>genres</td>
-<td>Book subjects</td>
+<td>caracter</td>
+<td>Géneros y palabras clave</td>
 </tr>
 <tr class="even">
 <td>first_publish_year</td>
-<td>Book first published year</td>
+<td>numeric</td>
+<td>Año de primera publicación</td>
 </tr>
 <tr class="odd">
 <td>editions</td>
-<td>Number of editions</td>
+<td>numeric</td>
+<td>Cantidad de ediciones</td>
 </tr>
 <tr class="even">
 <td>num_pages</td>
-<td>Number of pages</td>
+<td>numeric</td>
+<td>Cantidad de páginas</td>
 </tr>
 <tr class="odd">
 <td>cover_m</td>
-<td>Link to cover’s book - medium size</td>
+<td>caracter</td>
+<td>Link a la imagen de la tapa - tamaño medio</td>
 </tr>
 <tr class="even">
 <td>cover_l</td>
-<td>Link to cover’s book - large size</td>
+<td>caracter</td>
+<td>Link a la imagen de la tapa - tamaño grande</td>
 </tr>
 <tr class="odd">
 <td>average_rating</td>
-<td></td>
+<td>numeric</td>
+<td>Puntuación promedio</td>
 </tr>
 <tr class="even">
 <td>rating_count</td>
-<td></td>
+<td>numeric</td>
+<td>Cantidad de votos</td>
 </tr>
 <tr class="odd">
 <td>id_goodreads</td>
-<td></td>
+<td>caracter</td>
+<td>Identificador de Goodreads</td>
 </tr>
 <tr class="even">
 <td>id_amazon</td>
-<td></td>
+<td>caracter</td>
+<td>Identificador de Amazon</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="materiales-y-métodos" class="level2">
-<h2 class="anchored" data-anchor-id="materiales-y-métodos">Materiales y métodos</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
-<p>You can add options to executable code like this</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-</div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
 </section>
 <section id="resultados" class="level2">
 <h2 class="anchored" data-anchor-id="resultados">Resultados</h2>
-<p>El análisis realizado mostró</p>
+<div style="text-align: justify;">
+<p>Se creó una Shiny App que consta de un panel principal, un panel lateral y dos pestañas. En el panel lateral se puede seleccionar un rango de “Año de primera publicación” y uno o más autores. En la primera pestaña se puede interactuar con un gráfico que muestra la cantidad de votos y la valoración obtenida para los libros selecconados. En la segunda pestaña se presentan cuatro gráficos que muestran los “Top 10” de autores y libros mejor puntuados y con mayor cantidad de ediciones.</p>
+</div>
 </section>
 <section id="conclusiones" class="level2">
 <h2 class="anchored" data-anchor-id="conclusiones">Conclusiones</h2>
-<p>muchas gracias</p>
+<div style="text-align: justify;">
+<p>Si bien quedan muchos detalles por afinar, se logró obtener una aplicación interactiva utilizando la información contenida en una base de datos de acceso libre.</p>
+</div>
 </section>
 
 </main>

@@ -4,8 +4,7 @@ library(shiny)
 library(readr)
 library(tidyverse)
 library(plotly)
-# library(shinydashboard)
-# library(shinythemes)
+library(patchwork)
 library(bslib)
 library(shinyWidgets)
 
@@ -47,86 +46,6 @@ ggplotly(a)
 
 }
 
-# Los 10 más (podría cambiar entre autor o libro y por año: 
-  # autores y libros con puntajes más altos
-
-# autor - puntaje
-
-books_app %>%
-  group_by(author) %>%
-  summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>% #por si tengo varias filas por autor
-  arrange(desc(average_rating)) %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(y = reorder(author, average_rating), x = average_rating)) +
-  geom_bar(stat = "identity", fill = "#3498DB") +  
-  labs(
-    title = "Top 10 Autores por Puntuación Promedio",
-    y = "Autor",
-    x = "Puntuación Promedio"
-  ) +
-  theme_minimal()
-  
-top_10_autores <- books_app %>%
-  group_by(author) %>%
-  summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>%
-  arrange(desc(average_rating)) %>%
-  slice_head(n = 10)
-
-# libro - puntaje
-
-books_app %>%
-  group_by(title) %>%
-  summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>%
-  arrange(desc(average_rating)) %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(y = reorder(title, average_rating), x = average_rating)) +
-  geom_bar(stat = "identity", fill = "#3498DB") +  
-  labs(
-    title = "Top 10 Libros por Puntuación Promedio",
-    y = "Libro",
-    x = "Puntuación Promedio"
-  ) +
-  theme_minimal()
-
-top_10_libros <- books_app %>%
-  group_by(title) %>%
-  summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>%
-  arrange(desc(average_rating)) %>%
-  slice_head(n = 10)
-
-  # autores y libros con mayor cantidad de ediciones
-
-# autor - ediciones
-
-books_app %>%
-  group_by(author) %>%
-  summarise(editions = mean(editions, na.rm = TRUE)) %>%
-  arrange(desc(editions)) %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(y = reorder(author, editions), x = editions)) +
-  geom_bar(stat = "identity", fill = "#3498DB") +  
-  labs(
-    title = "Top 10 Autores por Cantidad de ediciones",
-    y = "Autor",
-    x = "Cantidad de ediciones"
-  ) +
-  theme_minimal()
-
-# libro - ediciones
-books_app %>%
-  group_by(title) %>%
-  summarise(editions = mean(editions, na.rm = TRUE)) %>%
-  arrange(desc(editions)) %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(y = reorder(title, editions), x = editions)) +
-  geom_bar(stat = "identity", fill = "#3498DB") +  
-  labs(
-    title = "Top 10 Libros por Cantidad de ediciones",
-    y = "Libro",
-    x = "Puntuación Promedio"
-  ) +
-  theme_minimal()
-
 # UI
 
 MiInterfaz <- fluidPage(
@@ -136,13 +55,19 @@ MiInterfaz <- fluidPage(
   
   h1("Valoración de libros según autor y año de primera publicación"),
   br(), # line break
-  HTML("Catálogo de libros"),
+  HTML("Open Library es un proyecto de Internet Archive que busca crear una página web para cada libro 
+       publicado. Además de ofrecer fichas bibliográficas completas, permite acceder a millones de textos: 
+       algunos disponibles para descarga libre por ser de dominio público y otros en préstamo digital, 
+       emulando el funcionamiento de una biblioteca tradicional. También es colaborativa, ya que los usuarios 
+       pueden contribuir agregando o editando información sobre los libros."),
+ br(),
+ br(),
   
   sidebarLayout(
     sidebarPanel(
       
       sliderInput("slider2",
-                  label = h3("Rango de años"), 
+                  label = h5("Año de primera publicación"), 
                   min = min(books_app$first_publish_year),
                   max = max(books_app$first_publish_year), 
                   value = c(1500, 2000)),
@@ -156,7 +81,21 @@ MiInterfaz <- fluidPage(
         )
       
   ),
-  mainPanel(plotlyOutput(outputId = "graf1"))
+  
+  # Agregar pestañas
+  
+  mainPanel(
+    tabsetPanel(
+      # Pestaña 1: Gráfico de valoración de libros
+      tabPanel("Gráfico de Valoración", 
+               plotlyOutput(outputId = "graf1")),
+      
+      # Pestaña 2: Gráficos de Top 10
+      tabPanel("Top 10",
+               h3("Principales Autores y Libros"),
+               plotOutput(outputId = "top10_cuadricula", height = "800px"))
+    )
+  )
  )
 )
 
@@ -185,13 +124,121 @@ MiServidor <- function(input, output) {
           y = average_rating, 
           text = paste("Título:", title,
                        "<br>Autor:", author,
-                       "<br>Año:", first_publish_year)) +
+                       "<br>Año:", first_publish_year,
+                       "<br>Cantidad de votos:", rating_count,
+                       "<br>Valoración:", average_rating)) +
       geom_point(color = "#98d8c9") +
+      labs(x = "Cantidad de votos", y = "Valoración") +
       theme_classic()
+
+    ggplotly(a, tooltip = "text") %>%
+      layout(
+        xaxis = list(
+          title = list(standoff = 20), # Agrega 20px de espacio al título del eje X
+          ticks = "outside" # Mueve las marcas del eje hacia afuera
+        ),
+        yaxis = list(
+          title = list(standoff = 20) # Agrega 20px de espacio al título del eje Y
+        )
+      )
     
-    ggplotly(a)
   })
-  }
+  # --- Gráficos del TOP 10 ---
+  
+  # Gráfico de Top 10 autores por rating
+  grafico_autores_rating <- reactive({
+    books_app %>%
+      group_by(author) %>%
+      summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>%
+      arrange(desc(average_rating)) %>%
+      slice_head(n = 10) %>%
+      ggplot(aes(y = reorder(author, average_rating), x = average_rating)) +
+      geom_bar(stat = "identity", fill = "#98d8c9") +
+      labs(title = "Top 10 Autores según su puntuación", y = NULL, x = "Puntuación Promedio") +
+      theme_minimal() +
+      theme(
+        # Aumenta el tamaño del título de los ejes
+        axis.title = element_text(size = 14), 
+        # Aumenta el tamaño de los números y etiquetas de los ejes
+        axis.text = element_text(size = 12),
+        # Ajusta el tamaño del título del gráfico
+        plot.title = element_text(size = 16, hjust = 0.5)
+      )
+  })
+  
+  # Gráfico de Top 10 libros por rating
+  grafico_libros_rating <- reactive({
+    books_app %>%
+      group_by(title) %>%
+      summarise(average_rating = mean(average_rating, na.rm = TRUE)) %>%
+      arrange(desc(average_rating)) %>%
+      slice_head(n = 10) %>%
+      ggplot(aes(y = reorder(title, average_rating), x = average_rating)) +
+      geom_bar(stat = "identity", fill = "#98d8c9") +
+      labs(title = "Top 10 Libros según su puntuación", y = NULL, x = "Puntuación Promedio") +
+      theme_minimal() +
+      theme(
+        # Aumenta el tamaño del título de los ejes
+        axis.title = element_text(size = 14), 
+        # Aumenta el tamaño de los números y etiquetas de los ejes
+        axis.text = element_text(size = 12),
+        # Ajusta el tamaño del título del gráfico
+        plot.title = element_text(size = 16, hjust = 0.5)
+      )
+  })
+  
+  # Gráfico de Top 10 autores por ediciones
+  grafico_autores_ediciones <- reactive({
+    books_app %>%
+      group_by(author) %>%
+      summarise(editions = mean(editions, na.rm = TRUE)) %>%
+      arrange(desc(editions)) %>%
+      slice_head(n = 10) %>%
+      ggplot(aes(y = reorder(author, editions), x = editions)) +
+      geom_bar(stat = "identity", fill = "#98d8c9") +
+      labs(title = "Top 10 Autores con más ediciones", y = NULL, x = "Cantidad de Ediciones") +
+      theme_minimal() +
+      theme(
+        # Aumenta el tamaño del título de los ejes
+        axis.title = element_text(size = 14), 
+        # Aumenta el tamaño de los números y etiquetas de los ejes
+        axis.text = element_text(size = 12),
+        # Ajusta el tamaño del título del gráfico
+        plot.title = element_text(size = 16, hjust = 0.5)
+      )
+  })
+  
+  # Gráfico de Top 10 libros por ediciones
+  grafico_libros_ediciones <- reactive({
+    books_app %>%
+      group_by(title) %>%
+      summarise(editions = mean(editions, na.rm = TRUE)) %>%
+      arrange(desc(editions)) %>%
+      slice_head(n = 10) %>%
+      ggplot(aes(y = reorder(title, editions), x = editions)) +
+      geom_bar(stat = "identity", fill = "#98d8c9") +
+      labs(title = "Top 10 Libros con más ediciones", y = NULL, x = "Cantidad de Ediciones") +
+      theme_minimal() +
+      theme(
+        # Aumenta el tamaño del título de los ejes
+        axis.title = element_text(size = 14), 
+        # Aumenta el tamaño de los números y etiquetas de los ejes
+        axis.text = element_text(size = 12),
+        # Ajusta el tamaño del título del gráfico
+        plot.title = element_text(size = 16, hjust = 0.5)
+      )
+  })
+  
+  # Renderiza la cuadrícula de 2x2 en un solo `renderPlot`
+  output$top10_cuadricula <- renderPlot({
+    library(patchwork)
+    
+    # Combina los gráficos y crea el diseño 2x2
+    (grafico_autores_rating() + grafico_libros_rating()) /
+      (grafico_autores_ediciones() + grafico_libros_ediciones()) +
+      plot_layout(guides = "collect") # Recopila las guías para que no se dupliquen
+  })
+}
 
 shinyApp(ui = MiInterfaz, server = MiServidor)
 

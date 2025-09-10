@@ -8,8 +8,6 @@ library(dplyr) #para la función filter()
 # Importación de los datos crudos
 books <- read_delim("datos_crudos/books.csv", delim = "|", escape_double = FALSE, trim_ws = TRUE)
 
-# variables <- colnames(books)
-
 # Eliminar registros incompletos
 books_filtrado <- books %>%
   filter(author != "Author not available" 
@@ -19,7 +17,9 @@ books_filtrado <- books %>%
          & average_rating != 0.00
          & num_pages != 0
          & rating_count > 10
-         )
+         ) %>% 
+  filter(!first_publish_year %in% c("Year not available", "Na", "AN")) %>%
+  mutate(first_publish_year = as.numeric(first_publish_year))
 
 # Conservar un único registro por cada book_id
 books_unicos <- books_filtrado %>%
