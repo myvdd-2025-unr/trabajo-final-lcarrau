@@ -17,11 +17,44 @@ lightbox: true
 
 ## Introducción
 
-El conjunto de datos seleccionado contiene información
+El conjunto de datos seleccionado contiene información del catálogo de libros de Open Library ([Open Library](https://openlibrary.org/ "Un recurso de Internet Archive")).
+
+Criterios de selección:
+
+filter(author != "Author not available"
+
+& description != "No description available"
+
+& genres != "\['Subject not available'\]"
+
+& genres != "\['Coloring books'\]"
+
+& average_rating != 0.00
+
+& num_pages != 0
+
+& rating_count \> 10
 
 Descripción del conjunto de datos
 
 Tabla resumen de las variables y sus características
+
+| Variable           | Descripción                        |
+|--------------------|------------------------------------|
+| book_id            | OpenLibrary Identifier             |
+| title              | Book title                         |
+| author             | Book author                        |
+| description        | Book description                   |
+| genres             | Book subjects                      |
+| first_publish_year | Book first published year          |
+| editions           | Number of editions                 |
+| num_pages          | Number of pages                    |
+| cover_m            | Link to cover's book - medium size |
+| cover_l            | Link to cover's book - large size  |
+| average_rating     |                                    |
+| rating_count       |                                    |
+| id_goodreads       |                                    |
+| id_amazon          |                                    |
 
 ## Materiales y métodos
 
@@ -42,7 +75,7 @@ The `echo: false` option disables the printing of code (only output is displayed
 
 ## Resultados
 
-El análisis realizado mostró 
+El análisis realizado mostró
 
 ## Conclusiones
 
